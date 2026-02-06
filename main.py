@@ -1,11 +1,16 @@
-from flask import Flask, session, render_template, request
-from flask_socketio import SocketIO, emit, join_room, leave_room
+import os
 import sqlite3
 from datetime import datetime
 
+import eventlet
+from flask import Flask, session, render_template, request
+from flask_socketio import SocketIO, emit, join_room, leave_room
+
+eventlet.monkey_patch()
+
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 DB_PATH = "chat.db"
 
@@ -301,4 +306,6 @@ def on_message(payload):
 # -------------------------
 if __name__ == "__main__":
     init_db()
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    port = int(os.getenv("PORT", "5000"))
+    debug = os.getenv("FLASK_ENV") != "production"
+    socketio.run(app, host="0.0.0.0", port=port, debug=debug)
