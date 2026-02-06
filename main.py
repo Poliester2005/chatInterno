@@ -9,7 +9,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "your_secret_key_change_in_product
 
 # Configuração para produção
 if os.environ.get("FLASK_ENV") == "production":
-    socketio = SocketIO(app, cors_allowed_origins=os.environ.get("CORS_ORIGINS", "*"), async_mode='eventlet')
+    socketio = SocketIO(app, cors_allowed_origins=os.environ.get("CORS_ORIGINS", "*"), async_mode='gevent')
 else:
     socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -309,6 +309,6 @@ def on_message(payload):
 # -------------------------
 if __name__ == "__main__":
     init_db()
-    debug_mode = os.environ.get("FLASK_ENV") != "production"
-    port = int(os.environ.get("PORT", 5000))
+    debug_mode = False
+    port = 5000
     socketio.run(app, host="0.0.0.0", port=port, debug=debug_mode)
