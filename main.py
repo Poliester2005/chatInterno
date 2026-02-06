@@ -1,16 +1,17 @@
 import os
+
+from gevent import monkey
+monkey.patch_all()  # must run before other stdlib imports for gevent compatibility
+
 import sqlite3
 from datetime import datetime
 
-import eventlet
 from flask import Flask, session, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-eventlet.monkey_patch()
-
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
 
 DB_PATH = "chat.db"
 
