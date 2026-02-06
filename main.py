@@ -2,12 +2,20 @@ from flask import Flask, session, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import sqlite3
 from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.secret_key = os.environ.get("SECRET_KEY", "your_secret_key_change_in_production")
 
-DB_PATH = "chat.db"
+# Configuração para produção
+if os.environ.get("FLASK_ENV") == "production":
+    socketio = SocketIO(app, cors_allowed_origins=os.environ.get("CORS_ORIGINS", "*"), async_mode='eventlet')
+else:
+    socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Caminho do banco de dados - suporta volume persistente no Render
+DATA_DIR = os.environ.get("DATA_DIR", ".")
+DB_PATH = os.path.join(DATA_DIR, "chat.db")
 
 
 # -------------------------
@@ -301,4 +309,6 @@ def on_message(payload):
 # -------------------------
 if __name__ == "__main__":
     init_db()
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    debug_mode = os.environ.get("FLASK_ENV") != "production"
+    port = int(os.environ.get("PORT", 5000))
+    socketio.run(app, host="0.0.0.0", port=port, debug=debug_mode)
