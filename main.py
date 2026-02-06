@@ -1,7 +1,7 @@
 import os
 
-from gevent import monkey
-monkey.patch_all()  # must run before other stdlib imports for gevent compatibility
+import eventlet
+eventlet.monkey_patch()  # deve rodar antes de outros imports
 
 import sqlite3
 from datetime import datetime
@@ -9,9 +9,10 @@ from datetime import datetime
 from flask import Flask, session, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
+
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 DB_PATH = "chat.db"
 
@@ -306,7 +307,8 @@ def on_message(payload):
 # Run app
 # -------------------------
 if __name__ == "__main__":
-    init_db()
     port = int(os.getenv("PORT", "5000"))
     debug = os.getenv("FLASK_ENV") != "production"
     socketio.run(app, host="0.0.0.0", port=port, debug=debug)
+
+init_db()
