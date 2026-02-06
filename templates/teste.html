@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chat com Salas + Paginação</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <h1>Chat</h1>
+
+    <div id="top">
+      <strong>Sala:</strong>
+      <input id="roomInput" placeholder="geral" value="geral" />
+      <button id="joinBtn">Entrar</button>
+      <button id="leaveBtn" disabled>Sair</button>
+      <button id="moreBtn" disabled>Carregar mais</button>
+      <span class="muted" id="meta"></span>
+    </div>
+
+    <div
+      style="
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        margin-top: 12px;
+      "
+    >
+      <aside style="width: 260px">
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <strong>Salas</strong>
+          <button
+            id="refreshRoomsBtn"
+            style="padding: 6px 10px; border-radius: 10px"
+          >
+            Atualizar
+          </button>
+        </div>
+
+        <div
+          id="rooms"
+          style="
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            overflow: auto;
+            max-height: 380px;
+          "
+        >
+          <!-- salas entram aqui -->
+        </div>
+
+        <div style="color: #666; font-size: 12px; margin-top: 8px">
+          Clique em uma sala para entrar.
+        </div>
+      </aside>
+
+      <main style="flex: 1">
+        <div id="log"></div>
+
+            <div class="row">
+          <input id="msg" placeholder="Digite sua mensagem..." autocomplete="off" />
+          <button id="send" disabled>Enviar</button>
+        </div>
+      </main>
+    </div>
+
+    <div id="overlay">
+      <div id="modal">
+        <h2>Escolha seu username</h2>
+        <p>Digite um nome para aparecer no chat.</p>
+        <div class="row">
+          <input id="usernameInput" placeholder="Ex: Eduardo" maxlength="24" />
+          <button id="usernameBtn">Entrar</button>
+        </div>
+        <div id="hint"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/dist/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+
+  </body>
+</html>
