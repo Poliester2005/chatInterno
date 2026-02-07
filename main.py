@@ -1,7 +1,6 @@
-import os
-
 import eventlet
 eventlet.monkey_patch()  # deve rodar antes de outros imports
+import os
 
 import sqlite3
 from datetime import datetime
